@@ -1,5 +1,3 @@
-**English for kids** - application for learning and train English words by children.
-
 ****
 ## How to run project
 * Make `git clone`
