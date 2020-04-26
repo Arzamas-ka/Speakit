@@ -1,6 +1,5 @@
 import {renderWelcomePage} from './render/renderWelcomePage';
-import './style/index.css';
 
-console.log('Test');
+import './style/index.css';
 
 renderWelcomePage();

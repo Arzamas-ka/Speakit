@@ -8,7 +8,8 @@ const loadWordsForLevel = async (level) => {
 
   for (let i = 0; i < 10; i++) {
     const wordIndx = Math.floor(Math.random() * 600);
-    const word = words[wordIndx];
+    const word = {...words[wordIndx]};
+    word.guessed = false;
     resultWords.push(word);
   }
 

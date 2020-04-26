@@ -1,5 +1,5 @@
 import { createElement, removeElement } from '../helper/domHelpers';
-import trainLevels from './renderTrainLevels';
+import renderTrainLevels from './renderTrainLevels';
 import renderTrainBlock from './renderTrainBlock';
 
 const renderTrainPage = () => {
@@ -9,7 +9,8 @@ const renderTrainPage = () => {
   const trainPageWrapper = createElement('div', 'train-page');
 
   body.append(trainPageWrapper);
-  trainLevels();
+  renderTrainLevels();
+
   renderTrainBlock(1);
 };
 

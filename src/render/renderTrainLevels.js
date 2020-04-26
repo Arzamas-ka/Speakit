@@ -1,4 +1,5 @@
 import { createElement, removeElement } from '../helper/domHelpers';
+import { stopSpeechRecognition } from './renderSpeechRecognition';
 import renderTrainBlock from './renderTrainBlock';
 
 const levels = [
@@ -33,6 +34,7 @@ const renderTrainBullets = (trainLevelsWrapper) => {
 
 const handleLevelTrainClick = (evt) => {
   const clickedElement = evt.target;
+  stopSpeechRecognition();
 
   if (currentTrainLevel === parseInt(evt.target.id)) {
     return;

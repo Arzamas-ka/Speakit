@@ -52,7 +52,7 @@ li {
   flex-direction: column;
 
   font-size: 20px;
-  background-image: url('../assets/img/background-3.jpg');
+  background-image: url('../assets/img/background.jpg');
   background-size: cover;
 }
 
@@ -128,7 +128,7 @@ li {
   width: 100%;
   height: 3px;
 
-  background-color: orange;
+  background-color: #048bc2;
   transform: translateY(-50%);
 }
 
@@ -138,13 +138,13 @@ li {
   height: 36px;
 
   border-radius: 50%;
-  background-color: orange;
+  background-color: #048bc2;
 
   cursor: pointer;
 }
 
 .train-levels__level--active {
-  box-shadow: 0 0 0 2px orange, inset 0 0 0 4px #ffffff, inset 0 0 0 3px orange;
+  box-shadow: 0 0 0 2px #048bc2, inset 0 0 0 4px #ffffff, inset 0 0 0 3px #048bc2;
 }
 
 .train-levels__level:hover {
@@ -207,10 +207,15 @@ li {
 }
 
 .train-word {
+  display: flex;
   width: 400px;
   height: 60px;
-
   margin-bottom: 20px;
+
+  justify-content: center;
+  align-items: center;
+
+  font-size: 20px;
 }
 
 .word-cards {
@@ -257,6 +262,22 @@ li {
   box-shadow: 1px 1px 3px 3px gray;
 }
 
+.word-cards__card--active {
+  background-color: #fbe898;
+}
+
+.word-cards__card--active:before {
+  background-color: #fbe898;
+}
+
+.word-cards__card--guessed {
+  background-color: #CCF4D3;
+}
+
+.word-cards__card--guessed:before {
+  background-color: #CCF4D3;
+}
+
 .word-cards__card p {
   margin: 10px;
 
@@ -281,4 +302,66 @@ li {
 
 .audio {
   display: none;
+}
+
+.train-answers {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  content: '';
+
+  display: flex;
+  justify-content: flex-end;
+
+  width: 405px;
+}
+
+.train-word__speak {
+  position: relative;
+  width: 100%;
+}
+
+.train-word__speak:before {
+  position: absolute;
+  left: 0;
+  top: -10px;
+  content: '';
+
+  width: 40px;
+  height: 40px;
+
+  background-image: url('../assets/img/microphone.png');
+  background-size: cover;
+}
+
+.train-word__speak-input {
+  display: block;
+  width: 100%;
+  padding-bottom: 5px;
+  border: 0;
+  outline: none;
+  border-bottom: 2px solid grey;
+
+  font-size: 20px;
+  text-align: center;
+}
+
+.train-answers__img {
+  width: 50px;
+  height: 50px;
+}
+
+.results-container {
+  position: absolute;
+  content: '';
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+
+  display: flex;
+  
+  background-image: url('../assets/img/background.jpg');
+  background-size: cover;
 }
