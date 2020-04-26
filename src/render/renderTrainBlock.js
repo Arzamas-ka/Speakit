@@ -132,7 +132,6 @@ const handleAudioResultsClick = (evt) => {
 
   if (wordElement) {
     const wordEng = wordElement.querySelector('.results-list__eng').textContent;
-    console.log(wordEng);
     const wordData = words.find((word) => word.word === wordEng);
 
     if (wordData) {
@@ -141,7 +140,8 @@ const handleAudioResultsClick = (evt) => {
   }
 };
 
-const renderResultsBody = (resultElement) => {
+const renderResultsBody = () => {
+  const resultsBody = createElement('div', 'results-body');
   const notGuessedTitle = createElement('h3', 'results__title');
   notGuessedTitle.textContent = 'Mistakes';
 
@@ -212,12 +212,46 @@ const renderResultsBody = (resultElement) => {
     listGuestedWords.append(wordItem);
   });
 
-  resultElement.append(notGuessedTitle);
-  resultElement.append(listNotGuestedWords);
-  resultElement.append(guessedTitle);
-  resultElement.append(listGuestedWords);
+  resultsBody.append(notGuessedTitle);
+  resultsBody.append(listNotGuestedWords);
+  resultsBody.append(guessedTitle);
+  resultsBody.append(listGuestedWords);
 
-  resultElement.addEventListener('click', handleAudioResultsClick);
+  resultsBody.addEventListener('click', handleAudioResultsClick);
+
+  return resultsBody;
+};
+
+const showStatistics = () => {
+  const statisticsBody = findElement('.results-body');
+  statisticsBody.innerHTML = '';
+  const statisticsTitle = createElement('h3', 'statistics-title');
+  const statisticsList = createElement('ul', 'statistics-list');
+
+  statisticsTitle.textContent = 'Statistics';
+  statisticsBody.append(statisticsTitle);
+
+  const statisticsData = JSON.parse(localStorage.getItem('statistics'));
+
+  statisticsData.forEach((stat) => {
+    const statisticElement = createElement('li', 'statistics-list__item');
+    const dateElement = createElement('span', 'statistics-list__date');
+    const failedElement = createElement('span', 'statistics-list__count');
+    failedElement.classList.add('statistics-list__count--failed');
+    const succeededElement = createElement('span', 'statistics-list__count');
+    succeededElement.classList.add('statistics-list__count--succeeded');
+
+    dateElement.textContent = stat.date;
+    failedElement.textContent = `${stat.failedCount}`;
+    succeededElement.textContent = `${stat.successCount}`;
+
+    statisticElement.append(dateElement);
+    statisticElement.append(failedElement);
+    statisticElement.append(succeededElement);
+    statisticsList.append(statisticElement);
+  });
+
+  statisticsBody.append(statisticsList);
 };
 
 const addEventListenerReturn = (buttonReturn) => {
@@ -230,6 +264,12 @@ const addEventListenerNewGame = (buttonNewGame) => {
   buttonNewGame.addEventListener('click', () => {
     handleRestart();
     resetResults();
+  });
+};
+
+const addEventListenerStatistics = (buttonStatistics) => {
+  buttonStatistics.addEventListener('click', () => {
+    showStatistics();
   });
 };
 
@@ -248,6 +288,7 @@ const renderResultButtons = (resultElement) => {
 
   addEventListenerReturn(buttonReturn);
   addEventListenerNewGame(buttonNewGame);
+  addEventListenerStatistics(buttonStatistics);
 
   buttons.append(buttonReturn);
   buttons.append(buttonNewGame);
@@ -255,14 +296,37 @@ const renderResultButtons = (resultElement) => {
   resultElement.append(buttons);
 };
 
-const handleResults = () => {
+const addToStorageStatistics = (words) => {
+  const statistics = JSON.parse(localStorage.getItem('statistics')) || [];
+
+  const newGameInfo = {
+    date: '',
+    successCount: 0,
+    failedCount: 0,
+  };
+
+  const failedCount = words.filter((word) => !word.guessed).length;
+  const successCount = words.length - failedCount;
+  const date = new Date();
+  const dateTime = `${date.toDateString()} ${date.toLocaleTimeString()}`;
+
+  newGameInfo.date = dateTime;
+  newGameInfo.successCount = successCount;
+  newGameInfo.failedCount = failedCount;
+  statistics.unshift(newGameInfo);
+  localStorage.setItem('statistics', JSON.stringify(statistics.slice(0, 10)));
+};
+
+export const handleResults = () => {
   removeElement('.results-container');
+  addToStorageStatistics(words);
 
   const body = findElement('body');
   const resultContainerElement = createElement('div', 'results-container');
   const resultElement = createElement('div', 'results');
 
-  renderResultsBody(resultElement);
+  const resultsBody = renderResultsBody();
+  resultElement.append(resultsBody);
   renderResultButtons(resultElement);
 
   resultContainerElement.append(resultElement);
@@ -331,7 +395,6 @@ const addTrainBlockListener = (wordCards) => {
 
       const wordText = wordCard.id;
       const wordData = words.find((word) => word.word === wordText);
-      console.log('wordData:', wordData);
 
       const wordResources = await getWordResources(wordData);
       insertWordResources(wordResources);
@@ -343,7 +406,6 @@ const renderTrainBlock = async (trainLevel) => {
   removeElement('.train');
 
   words = await loadWordsForLevel(trainLevel);
-  console.log(words);
 
   const trainPage = findElement('.train-page');
   const trainContainer = createElement('div', 'train');

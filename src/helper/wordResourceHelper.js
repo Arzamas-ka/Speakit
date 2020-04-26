@@ -4,7 +4,6 @@ import { findElement, removeElement, createElement } from './domHelpers';
 import { TRANSLATE_URL } from '../constants/url';
 
 export const getImageUrl = (wordData) => {
-  console.log('wordData: ', wordData);
   const imgUrl = `${STATIC_URL}${wordData.image}`;
   return imgUrl;
 };

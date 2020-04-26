@@ -1,12 +1,11 @@
 import { createElement, findElement } from '../helper/domHelpers';
 import { getImageUrl } from '../helper/wordResourceHelper';
+import { handleResults } from './renderTrainBlock';
 import doneImg from '../assets/img/done.png';
 
 export let recognition;
 
 const compareWords = (transcript, words) => {
-  console.log('words: ', words);
-
   const cardsElements = [...document.querySelectorAll('.word-cards__card')];
   const correctAnswersElement = findElement('.train-answers');
   const answeringImg = document.querySelector('.train__img');
@@ -28,6 +27,7 @@ const compareWords = (transcript, words) => {
 
   if (isAllGuessed) {
     stopSpeechRecognition();
+    handleResults();
   }
 };
 
