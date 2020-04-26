@@ -8,11 +8,14 @@ import loadWordsForLevel from '../api/loadCards';
 import {
   getWordResources,
   insertWordResources,
+  translateWord,
 } from '../helper/wordResourceHelper';
 import renderCorrectAnswers from './renderCorrectAnswers';
 import renderSpeechRecognition, {
   stopSpeechRecognition,
 } from './renderSpeechRecognition';
+import { createAudioFile } from './renderAudioFile';
+import { STATIC_URL } from '../constants/url';
 
 let isSpeakState = false;
 
@@ -92,6 +95,10 @@ const resetWords = () => {
   words.forEach((word) => (word.guessed = false));
 };
 
+const resetResults = () => {
+  removeElement('.results-container');
+};
+
 const handleRestart = () => {
   stopSpeechRecognition();
   resetTrainAnswers();
@@ -102,13 +109,164 @@ const handleRestart = () => {
   isSpeakState = false;
 };
 
-const handleResults = () => {
+const addAudioElement = (wordData) => {
   const body = findElement('body');
+
+  const audioUrl = `${STATIC_URL}${wordData.audio}`;
+
+  removeElement('.audio');
+  const audioContainer = createElement('div', 'audio');
+  const audioElement = createAudioFile(audioUrl);
+  audioContainer.append(audioElement);
+  body.append(audioContainer);
+};
+
+const handleAudioResultsClick = (evt) => {
+  const path = evt.path || (evt.composedPath && evt.composedPath());
+
+  const wordElement = path.find((elem) => {
+    if (elem.className && elem.className.includes('results-list__item')) {
+      return elem;
+    }
+  });
+
+  if (wordElement) {
+    const wordEng = wordElement.querySelector('.results-list__eng').textContent;
+    console.log(wordEng);
+    const wordData = words.find((word) => word.word === wordEng);
+
+    if (wordData) {
+      addAudioElement(wordData);
+    }
+  }
+};
+
+const renderResultsBody = (resultElement) => {
+  const notGuessedTitle = createElement('h3', 'results__title');
+  notGuessedTitle.textContent = 'Mistakes';
+
+  const notGuessedWords = words.filter((word) => !word.guessed);
+
+  const notGuessedCount = createElement('span', 'results__title-number');
+  notGuessedCount.classList.add('results__title-number--error');
+  notGuessedCount.textContent = notGuessedWords.length;
+  notGuessedTitle.append(notGuessedCount);
+
+  const listNotGuestedWords = createElement('ul', 'results-list');
+
+  notGuessedWords.forEach(async (word) => {
+    const wordItem = createElement('li', 'results-list__item');
+    const wordEng = createElement('span', 'results-list__eng');
+    const wordTranscription = createElement(
+      'span',
+      'results-list__transcription'
+    );
+    const wordTranslate = createElement('span', 'results-list__translate');
+
+    const wordTranslateText = await translateWord(word.word);
+
+    wordEng.textContent = word.word.toLowerCase();
+    wordTranscription.textContent = word.transcription;
+    wordTranslate.textContent = wordTranslateText.toLowerCase();
+
+    wordItem.append(wordEng);
+    wordItem.append(wordTranscription);
+    wordItem.append(wordTranslate);
+    wordItem.append(wordTranslate);
+
+    listNotGuestedWords.append(wordItem);
+  });
+
+  const guessedTitle = createElement('h3', 'results__title');
+  guessedTitle.textContent = 'Success';
+
+  const guessedWords = words.filter((word) => word.guessed);
+
+  const guessedCount = createElement('span', 'results__title-number');
+  guessedCount.classList.add('results__title-number--success');
+  guessedCount.textContent = guessedWords.length;
+  guessedTitle.append(guessedCount);
+
+  const listGuestedWords = createElement('ul', 'results-list');
+
+  guessedWords.forEach(async (word) => {
+    const wordItem = createElement('li', 'results-list__item');
+    const wordEng = createElement('span', 'results-list__eng');
+    const wordTranscription = createElement(
+      'span',
+      'results-list__transcription'
+    );
+    const wordTranslate = createElement('span', 'results-list__translate');
+
+    const wordTranslateText = await translateWord(word.word);
+
+    wordEng.textContent = word.word.toLowerCase();
+    wordTranscription.textContent = word.transcription;
+    wordTranslate.textContent = wordTranslateText.toLowerCase();
+
+    wordItem.append(wordEng);
+    wordItem.append(wordTranscription);
+    wordItem.append(wordTranslate);
+    wordItem.append(wordTranslate);
+
+    listGuestedWords.append(wordItem);
+  });
+
+  resultElement.append(notGuessedTitle);
+  resultElement.append(listNotGuestedWords);
+  resultElement.append(guessedTitle);
+  resultElement.append(listGuestedWords);
+
+  resultElement.addEventListener('click', handleAudioResultsClick);
+};
+
+const addEventListenerReturn = (buttonReturn) => {
+  buttonReturn.addEventListener('click', () => {
+    resetResults();
+  });
+};
+
+const addEventListenerNewGame = (buttonNewGame) => {
+  buttonNewGame.addEventListener('click', () => {
+    handleRestart();
+    resetResults();
+  });
+};
+
+const renderResultButtons = (resultElement) => {
+  const buttons = createElement('div', 'result-buttons');
+  const buttonReturn = createElement('button', 'result-buttons__return');
+  const buttonNewGame = createElement('button', 'result-buttons__new-game');
+  const buttonStatistics = createElement(
+    'button',
+    'result-buttons__statistics'
+  );
+
+  buttonReturn.textContent = 'Return';
+  buttonNewGame.textContent = 'New game';
+  buttonStatistics.textContent = 'Statistics';
+
+  addEventListenerReturn(buttonReturn);
+  addEventListenerNewGame(buttonNewGame);
+
+  buttons.append(buttonReturn);
+  buttons.append(buttonNewGame);
+  buttons.append(buttonStatistics);
+  resultElement.append(buttons);
+};
+
+const handleResults = () => {
   removeElement('.results-container');
-  const resultElement = createElement('div', 'results-container');
 
+  const body = findElement('body');
+  const resultContainerElement = createElement('div', 'results-container');
+  const resultElement = createElement('div', 'results');
 
-  body.append(resultElement);
+  renderResultsBody(resultElement);
+  renderResultButtons(resultElement);
+
+  resultContainerElement.append(resultElement);
+  body.append(resultContainerElement);
 };
 
 const addListenerSpeakPlease = (buttonSpeak) => {
@@ -135,7 +293,6 @@ const renderTrainButtons = () => {
   addListenerSpeakPlease(buttonSpeak);
   addListenerRestart(buttonRestart);
   addListenerResults(buttonResults);
-
 
   buttons.append(buttonRestart);
   buttons.append(buttonSpeak);

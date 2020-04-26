@@ -9,14 +9,19 @@ export const getImageUrl = (wordData) => {
   return imgUrl;
 };
 
-export const getWordResources = async (wordData) => {
-  const audioUrl = `${STATIC_URL}${wordData.audio}`;
-  const imgUrl = getImageUrl(wordData);
-
-  const response = await fetch(`${TRANSLATE_URL}&text=${wordData.word}`);
+export const translateWord = async (word) => {
+  const response = await fetch(`${TRANSLATE_URL}&text=${word}`);
   const {
     text: [wordTranslation],
   } = await response.json();
+
+  return wordTranslation;
+};
+
+export const getWordResources = async (wordData) => {
+  const audioUrl = `${STATIC_URL}${wordData.audio}`;
+  const imgUrl = getImageUrl(wordData);
+  const wordTranslation = await translateWord(wordData.word);
 
   return { audioUrl, imgUrl, wordTranslation };
 };

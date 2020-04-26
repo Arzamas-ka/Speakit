@@ -144,7 +144,8 @@ li {
 }
 
 .train-levels__level--active {
-  box-shadow: 0 0 0 2px #048bc2, inset 0 0 0 4px #ffffff, inset 0 0 0 3px #048bc2;
+  box-shadow: 0 0 0 2px #048bc2, inset 0 0 0 4px #ffffff,
+    inset 0 0 0 3px #048bc2;
 }
 
 .train-levels__level:hover {
@@ -271,11 +272,11 @@ li {
 }
 
 .word-cards__card--guessed {
-  background-color: #CCF4D3;
+  background-color: #ccf4d3;
 }
 
 .word-cards__card--guessed:before {
-  background-color: #CCF4D3;
+  background-color: #ccf4d3;
 }
 
 .word-cards__card p {
@@ -361,7 +362,108 @@ li {
   z-index: 50;
 
   display: flex;
-  
+  justify-content: center;
+  align-items: center;
+
   background-image: url('../assets/img/background.jpg');
   background-size: cover;
+}
+
+.results {
+  width: 600px;
+  min-height: 500px;
+  padding: 20px;
+
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.results__title {
+  margin-bottom: 15px;
+}
+
+.results__title-number {
+  padding: 5px;
+  margin-left: 10px;
+
+  color: white;
+  border-radius: 10px;
+}
+
+.results__title-number--error {
+  background-color: red;
+}
+
+.results__title-number--success {
+  background-color: green;
+}
+
+.results-list__item {
+  position: relative;
+  padding-left: 50px;
+  margin-bottom: 12px;
+
+  cursor: pointer;
+}
+
+.results-list__item:before {
+  position: absolute;
+  content: '';
+  top: 50%;
+  left: 10px;
+
+  display: block;
+  width: 20px;
+  height: 20px;
+
+  transform: translateY(-50%);
+
+  background-image: url('../assets/img/sound.png');
+  background-repeat: no-repeat;
+  background-color: white;
+  background-size: cover;
+}
+
+.results-list__eng {
+  margin-right: 20px;
+
+  font-size: 18px;
+}
+
+.results-list__transcription {
+  margin-right: 20px;
+
+  color: grey;
+  font-size: 18px;
+}
+
+.results-list__translate {
+  font-size: 18px;
+}
+
+.result-buttons {
+  display: flex;
+  justify-content: space-around;
+}
+.result-buttons__return,
+.result-buttons__new-game,
+.result-buttons__statistics {
+  width: 150px;
+  padding: 0 10px;
+  margin: 30px 10px;
+
+  line-height: 2.5;
+  letter-spacing: 1px;
+  font-size: 18px;
+  text-align: center;
+  color: white;
+  border: 0;
+  border-radius: 10px;
+  background-color: #048bc2;
+  box-shadow: inset 2px 2px 3px rgba(255, 255, 255, 0.4),
+    inset -2px -2px 3px rgba(0, 0, 0, 0.4);
+
+  cursor: pointer;
+  outline: none;
 }
